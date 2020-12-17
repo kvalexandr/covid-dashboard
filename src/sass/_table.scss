@@ -1,0 +1,42 @@
+body {
+  background-color: #edf2f7;
+}
+
+.data-tab {
+  font-size: .9rem;
+
+  &.active {
+    display: block;
+  }
+}
+
+.btn-tab {
+  
+
+  &.active {
+    background: rgb(85, 161, 89);
+    color: #fff;
+  }
+}
+
+.data-country {
+  height: 300px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  border: 1px solid #ccc;
+  padding: 5px;
+  margin-bottom: 10px;
+
+  td {
+    padding: 5px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #b2dfdb;
+    }
+  }
+
+  .active td {
+    background-color: #b2dfdb;
+  }
+}

@@ -29,7 +29,7 @@ const jsLoaders = () => {
 module.exports = {
   context: path.resolve(__dirname, 'src'),
   mode: 'development',
-  entry: ['@babel/polyfill', './index.js'],
+  entry: ['@babel/polyfill', './js/index.js'],
   output: {
     filename: filename('js'),
     path: path.resolve(__dirname, 'dist'),
@@ -56,14 +56,6 @@ module.exports = {
       },
     }),
     new CopyPlugin([
-      {
-        from: path.resolve(__dirname, 'src/favicon.ico'),
-        to: path.resolve(__dirname, 'dist'),
-      },
-      {
-        from: path.resolve(__dirname, 'src/data'),
-        to: path.resolve(__dirname, 'dist/data'),
-      },
       {
         from: path.resolve(__dirname, 'src/assets'),
         to: path.resolve(__dirname, 'dist/assets'),
