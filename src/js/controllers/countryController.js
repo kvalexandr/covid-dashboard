@@ -1,6 +1,8 @@
 import * as model from '../models/model';
 import tableView from '../views/tableView';
 import countryView from '../views/countryView';
+import mapController from './mapController';
+import mapView from '../views/mapView';
 
 class CountryController {
   async showCountryData() {

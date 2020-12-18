@@ -53,7 +53,7 @@ class CountryView {
       <table class="responsive-table highlight">
         ${this._data.map((el) => {
       return `
-          <tr class="country-item${el.countryInfo.iso3 === this._selectCountry ? ' active' : ''}" data-country="${el.countryInfo.iso3}">
+          <tr class="country-item${el.countryInfo.iso3 === this._selectCountry ? ' active' : ''}" data-country="${el.countryInfo.iso3}" data-lat="${el.countryInfo.lat}" data-long="${el.countryInfo.long}">
             <td>
               <img src='${el.countryInfo.flag}' width="20px"> ${el.country} (${el[this._dataType][this._selectParam]})
             </td>

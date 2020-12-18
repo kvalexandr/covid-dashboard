@@ -10,6 +10,7 @@ export const state = {
   selectCountry: '',
   allCountry: [],
   oneCountry: {},
+  provinces: [],
 };
 
 export const loadAll = async function () {
@@ -85,7 +86,6 @@ export const loadCountryAll = async function () {
     });
 
 
-    //console.log(state.allCountry);
 
   } catch (err) {
     console.error(err);
@@ -133,6 +133,29 @@ export const loadCountry = async function () {
   }
 };
 
+export const loadProvinces = async function() {
+  try {
+    const res = await fetch(`${API_URl}/jhucsse`);
+    const data = await res.json();
+    if (!res.ok) throw new Error(`${data.message} (${res.status})`);
+
+    data.forEach((el) => {
+      state.provinces.push({
+        country: el.country, 
+        coordinates: el.coordinates,
+        stats: el.stats,
+      });
+    });
+    console.log(state);
+
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+loadProvinces();
+
+
 export const updateDataType = function (newDataType) {
   state.dataType = newDataType;
 }
@@ -144,3 +167,4 @@ export const updateSelectParam = function (newParam) {
 export const updateSelectCountry = function (newCountry) {
   state.selectCountry = newCountry;
 }
+
