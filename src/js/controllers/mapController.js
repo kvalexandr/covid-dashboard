@@ -11,7 +11,8 @@ class MapController {
   }
 
   setCountryOnMap(newLat, newLong) {
-    mapView.viewSelectedCountry(newLat, newLong)
+    mapView.viewSelectedCountry(newLat, newLong);
+    mapView.addCountryMarkerOnSelect(newLat, newLong);
   }
 
   init() {
