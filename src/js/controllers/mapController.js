@@ -5,16 +5,10 @@ import countryView from '../views/countryView';
 
 class MapController {
   async showMap() {
-    await model.loadAll();
+    await model.loadProvinces();
+    mapView.createMap();
     mapView.render(model.state);
   }
-
-//   setDataType(newDataType) {
-//     model.updateDataType(newDataType);
-//     tableView.render(model.state);
-//     countryView.render(model.state);
-//   }
-
 
   setCountryOnMap(newLat, newLong) {
     mapView.viewSelectedCountry(newLat, newLong)

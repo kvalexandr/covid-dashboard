@@ -142,8 +142,10 @@ export const loadProvinces = async function() {
     data.forEach((el) => {
       state.provinces.push({
         country: el.country, 
+        province: el.province || el.county || el.country,
         coordinates: el.coordinates,
         stats: el.stats,
+        globalPercent: (el.stats.confirmed / state.allData.cases) * 100,
       });
     });
     console.log(state);
@@ -153,7 +155,7 @@ export const loadProvinces = async function() {
   }
 }
 
-loadProvinces();
+// loadProvinces();
 
 
 export const updateDataType = function (newDataType) {

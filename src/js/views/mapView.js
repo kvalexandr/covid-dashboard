@@ -1,5 +1,6 @@
 import { MAP_API_URL } from '../config';
 import countryView from '../views/countryView';
+import tableView from './tableView';
 class MapView {
   constructor() {
     this._parentElement = document.querySelector(".map");
@@ -10,15 +11,17 @@ class MapView {
     this._provinces = state.provinces;
     this._selectCountry = state.selectCountry;
     this._stats = state.stats;
-    this._parentElement.innerHTML = "";
+    this._allData = state.allData;
     this._countryInfo = state.countryInfo;
-    this.map = L.map("map").setView([0, 0], 3);
     this._parentElement.insertAdjacentHTML(
       "afterbegin",
       this._generateHTML()
     );
   }
 
+  createMap() {
+    this.map = L.map("map").setView([0, 0], 2);
+  }
 
   addHandlerSelectCountryOnMap(handler) {
     countryView._parentElement.addEventListener('click', function (e) {
@@ -35,10 +38,13 @@ class MapView {
   }
 
   _generateHTML() {
-    L.tileLayer(MAP_API_URL, {noWrap: false, minZoom: 3}).addTo(this.map);
+    L.tileLayer(MAP_API_URL, {noWrap: false, minZoom: 2}).addTo(this.map);
      this._provinces.map((el) => {
       const {coordinates: {latitude, longitude}} = el;
-      L.marker([latitude, longitude]).addTo(this.map);
+      const {stats: {confirmed}} = el;
+      const circleRadius = Math.ceil(el.globalPercent * 5);
+      console.log(circleRadius)
+      L.circleMarker([latitude, longitude], {radius: circleRadius, color: '#FF0000', fill: true, fillOpacity: 0.4}).addTo(this.map);
     })
   }
 }
