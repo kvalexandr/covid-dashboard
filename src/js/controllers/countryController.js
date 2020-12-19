@@ -9,20 +9,26 @@ class CountryController {
   }
 
   setDataType(newDataType) {
-    model.updateDataType(newDataType);
+    model.state.dataType = newDataType;
     tableView.render(model.state);
     countryView.render(model.state);
   }
 
   setSelectParams(newParam) {
-    model.updateSelectParam(newParam);
+    model.state.selectParam = newParam;
     countryView.render(model.state);
   }
 
   async setCountry(newCountry) {
-    model.updateSelectCountry(newCountry);
+    model.state.selectCountry = newCountry;
     await model.loadCountry();
     tableView.render(model.state);
+  }
+
+  async searchCountry(searchValue) {
+    model.state.searchCountry = searchValue;
+    await model.searchCountry(searchValue);
+    countryView.render(model.state);
   }
 
   init() {
@@ -30,6 +36,7 @@ class CountryController {
     countryView.addHandlerChangeList(this.setDataType);
     countryView.addHandlerSelectParams(this.setSelectParams);
     countryView.addHandlerSelectCountry(this.setCountry);
+    countryView.addHandlerSearchCountry(this.searchCountry);
   }
 }
 

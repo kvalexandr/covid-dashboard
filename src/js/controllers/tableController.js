@@ -9,7 +9,7 @@ class TableController {
   }
 
   setDataType(newDataType) {
-    model.updateDataType(newDataType);
+    model.state.dataType = newDataType;
     tableView.render(model.state);
     countryView.render(model.state);
   }

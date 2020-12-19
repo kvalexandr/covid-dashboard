@@ -8,6 +8,8 @@ export const state = {
   dataType: 'allData',
   selectParam: 'cases',
   selectCountry: '',
+  searchCountry: '',
+  searchCountryResult: null,
   allCountry: [],
   oneCountry: {},
 };
@@ -84,9 +86,6 @@ export const loadCountryAll = async function () {
       });
     });
 
-
-    //console.log(state.allCountry);
-
   } catch (err) {
     console.error(err);
   }
@@ -133,14 +132,12 @@ export const loadCountry = async function () {
   }
 };
 
-export const updateDataType = function (newDataType) {
-  state.dataType = newDataType;
-}
-
-export const updateSelectParam = function (newParam) {
-  state.selectParam = newParam;
-}
-
-export const updateSelectCountry = function (newCountry) {
-  state.selectCountry = newCountry;
-}
+export const searchCountry = async function (searchCountry = '') {
+  try {
+    const regExpCountry = new RegExp(searchCountry, 'i');
+    state.searchCountryResult = state.allCountry.filter(el => regExpCountry.test(el.country));
+    state.searchCountryResult
+  } catch (err) {
+    console.error(err);
+  }
+};

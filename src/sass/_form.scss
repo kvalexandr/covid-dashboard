@@ -1,0 +1,13 @@
+.btn-tab {
+  background: #43a047;
+  
+  &.active, &:hover {
+    background: #1b5e20;
+    color: #fff;
+  }
+}
+
+.select {
+  display: block;
+  margin: 20px 0;
+}
