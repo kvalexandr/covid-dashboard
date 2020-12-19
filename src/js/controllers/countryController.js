@@ -14,6 +14,7 @@ class CountryController {
     model.updateDataType(newDataType);
     tableView.render(model.state);
     countryView.render(model.state);
+    mapView.render(model.state);
   }
 
   setSelectParams(newParam) {
