@@ -5,7 +5,8 @@ import countryView from '../views/countryView';
 
 class MapController {
   async showMap() {
-    await model.loadProvinces();
+    await model.loadCountryAll();
+    await model.addCovidDataToCoordinates();
     mapView.render(model.state);
   }
 

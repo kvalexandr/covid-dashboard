@@ -1,4 +1,6 @@
 import { API_URl, COUNT_PEOPLE } from '../config';
+import countriesCoordinates from '../border-coordinates';
+import countries from '../border-coordinates';
 
 export const state = {
   allData: {},
@@ -11,6 +13,7 @@ export const state = {
   allCountry: [],
   oneCountry: {},
   provinces: [],
+  countriesCoordinates: countriesCoordinates,
 };
 
 export const loadAll = async function () {
@@ -81,9 +84,16 @@ export const loadCountryAll = async function () {
           cases: Math.round(el.todayCases * 100000 / COUNT_PEOPLE),
           deaths: Math.round(el.todayDeaths * 100000 / COUNT_PEOPLE),
           recovered: Math.round(el.todayRecovered * 100000 / COUNT_PEOPLE),
-        }
+        }, 
+
+
+        
       });
+
+
     });
+
+    console.log(state);
 
 
 
@@ -133,6 +143,26 @@ export const loadCountry = async function () {
   }
 };
 
+
+export const addCovidDataToCoordinates = function () {
+
+ state.allCountry.forEach((ind) => {
+  state.countriesCoordinates.forEach((el) => {
+  if (ind.countryInfo.iso3 === el.id) {
+    el.todayData = ind.todayData;
+    el.todayOneHundredThousandData = ind.todayOneHundredThousandData;
+    el.oneHundredThousandData = ind.oneHundredThousandData;
+    el.allData = ind.allData;
+  }
+  })
+ })   
+
+ state.countriesCoordinates = state.countriesCoordinates.filter(el => el.allData);
+
+}
+
+
+
 export const loadProvinces = async function() {
   try {
     const res = await fetch(`${API_URl}/jhucsse`);
@@ -148,7 +178,6 @@ export const loadProvinces = async function() {
         globalPercent: (el.stats.confirmed / state.allData.cases) * 100,
       });
     });
-    console.log(state);
 
   } catch (err) {
     console.error(err);
