@@ -10,14 +10,20 @@ class MapController {
     mapView.render(model.state);
   }
 
-  setCountryOnMap(newLat, newLong) {
-    mapView.viewSelectedCountry(newLat, newLong);
+  async setCountryOnMap(newCountry) {
+    console.log('dd')
+      model.updateSelectCountry(newCountry);
+      await model.loadCountry();
+      countryView.render(model.state);
+      tableView.render(model.state);
+      mapView.render(model.state);
   }
 
   init() {
     this.showMap();
     mapView.addHandlerSelectCountryOnMap(this.setCountryOnMap);
-  }
+
+  } 
 }
 
 export default new MapController();

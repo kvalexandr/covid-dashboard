@@ -26,6 +26,7 @@ class CountryController {
     model.updateSelectCountry(newCountry);
     await model.loadCountry();
     tableView.render(model.state);
+    mapView.render(model.state);
   }
 
   init() {
