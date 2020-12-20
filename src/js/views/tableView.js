@@ -1,3 +1,4 @@
+import { fomatNumber } from '../core/utils';
 import View from './View';
 
 class TableView extends View {
@@ -17,9 +18,18 @@ class TableView extends View {
   _generateHTML() {
     return `
     <div class="data-tab">
-      cases: ${this._data.cases}<br>
-      deaths: ${this._data.deaths}<br>
-      recovered: ${this._data.recovered}<br>
+      <div class="data-info data-info--cases">
+        <div class="data-info__title">Cases</div>
+        <div class="data-info__number">${fomatNumber(this._data.cases)}</div>
+      </div>
+      <div class="data-info data-info--deaths">
+        <div class="data-info__title">Deaths</div>
+        <div class="data-info__number">${fomatNumber(this._data.deaths)}</div>
+      </div>
+      <div class="data-info data-info--recovered">
+        <div class="data-info__title">Recovered</div>
+        <div class="data-info__number">${fomatNumber(this._data.recovered)}</div>
+      </div>
     </div>
     ${super._generateHTMLTab(this._dataType)}
     `;
