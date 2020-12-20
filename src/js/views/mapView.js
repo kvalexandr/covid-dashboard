@@ -1,149 +1,199 @@
 import { MAP_API_URL } from "../config";
+import mapController from "../controllers/mapController";
 import countryView from "../views/countryView";
 import tableView from "./tableView";
+
 class MapView {
-  constructor() {
-    this._data = {};
-    this.map = L.map("map", {worldCopyJump: true}).setView([0, 0], 2);
-    this.layerGroup = L.layerGroup().addTo(this.map);
-    this.selectedLayer = L.layerGroup().addTo(this.map);
-    this.tileLayer = L.tileLayer(MAP_API_URL, {
-      noWrap: false,
-      minZoom: 2,
-    }).addTo(this.map);
-  }
-
-  render(state) {
-    this._provinces = state.provinces;
-    this._selectCountry = state.selectCountry;
-    this._stats = state.stats;
-    this._allData = state.allData;
-    this._dataType = state.dataType;
-    this._selectParam = state.selectParam;
-    this._allCountry = state.allCountry;
-    this.layerGroup.clearLayers();
-    this.selectedLayer.clearLayers();
-    this._countryInfo = state.countryInfo;
-    this.isCountrySelected = false;
-    this._countriesCoordinates = state.countriesCoordinates;
-    this._generateHTML();
-  }
-
-  addHandlerSelectCountryOnMap(handler) {
-    this.map.addEventListener('click', (e) => {
-      console.log(e.target);
-      if (this._selectCountry === this._prevSelectedCountry) return
-      this._generateHTML();
-        const country = this._selectCountry;
-        this._prevSelectedCountry = this._selectCountry;
-        console.log(this._selectCountryName)
-        console.log('ddd');
-        handler(country);
-    })
-  }
-
-  
-  _generateHTML() {
-    
-    const selectedCountryGeoJSON = this._countriesCoordinates.find(
-      (el) => el.id === this._selectCountry
-    );
-
-    function getColor(d) {
-      return d > 1000000
-        ? "#800026"
-        : d > 50000
-        ? "#BD0026"
-        : d > 20000
-        ? "#E31A1C"
-        : d > 10000
-        ? "#FC4E2A"
-        : d > 5000
-        ? "#FD8D3C"
-        : d > 2000
-        ? "#FEB24C"
-        : d > 1000
-        ? "#FED976"
-        : "#FFEDA0";
+    constructor() {
+        this._data = {};
+        this._parentElement = document.querySelector('#map');
+        this._HTMLConatainer = document.querySelector('.map-info');
+        this.map = L.map("map", { worldCopyJump: true }).setView([0, 0], 2);
+        this.layerGroup = L.layerGroup().addTo(this.map);
+        this.selectedLayer = L.layerGroup().addTo(this.map);
+        this.tileLayer = L.tileLayer(MAP_API_URL, {
+            noWrap: false,
+        }).addTo(this.map);
+        this.colorsForLayers = ["#800026", "#BD0026", "#E31A1C", "#FC4E2A", "#FD8D3C", "#FEB24C", "#FED976", "#FFEDA0"];
+        this.paramBorders = [1000000, 50000, 20000, 10000, 5000, 2000, 1000, 0];
     }
 
-    const setGlobalStyle = (feature) => {
-      return {
-        fillColor: getColor(feature[this._dataType][this._selectParam]),
-        weight: 2,
-        opacity: 1,
-        color: "white",
-        dashArray: "3",
-        fillOpacity: 0.7,
-      };
-    };
+    render(state) {
+        this._provinces = state.provinces;
+        this._selectCountry = state.selectCountry;
+        this._stats = state.stats;
+        this._allData = state.allData;
+        this._dataType = state.dataType;
+        this._selectParam = state.selectParam;
+        this._allCountry = state.allCountry;
+        this._HTMLConatainer.innerHTML = '';
+        this.selectedLayer.clearLayers();
+        this.layerGroup.clearLayers();
+        this._countryInfo = state.countryInfo;
+        this._countriesCoordinates = state.countriesCoordinates;
+        this._generateMapLayers();
+        this._HTMLConatainer.insertAdjacentHTML('afterbegin', this._generateHTML());
+    }
 
-    function setSelectedStyle() {
-      return {
-        weight: 5,
-        color: "black",
-        dashArray: "",
-        fillOpacity: 0.7,
-      };
+    addHandlerSelectCountryOnMap(handler) {
+        this.geojson.eachLayer(la => {
+            la.addEventListener('click', function() {
+                handler(la.feature.id);
+                setTimeout(() => {
+                    document.querySelector('.country-item.active').scrollIntoView({ block: "center", behavior: "smooth" });
+                }, 100)
+
+            })
+        })
+
+    }
+
+    update() {
+        this.addHandlerSelectCountryOnMap(mapController.setCountryOnMap);
+    }
+
+    getColorForLayers(param) {
+        return param > 1000000 ?
+            "#800026" :
+            param > 50000 ?
+            "#BD0026" :
+            param > 20000 ?
+            "#E31A1C" :
+            param > 10000 ?
+            "#FC4E2A" :
+            param > 5000 ?
+            "#FD8D3C" :
+            param > 2000 ?
+            "#FEB24C" :
+            param > 1000 ?
+            "#FED976" :
+            "#FFEDA0";
     }
 
 
 
-    let geojson = L.geoJson(this._countriesCoordinates, {
-      style: setGlobalStyle,
-    }).addTo(this.layerGroup);
+    _generateMapLayers() {
 
-    L.geoJson(selectedCountryGeoJSON, {
-      style: {
-        fillColor: "",
-        weight: 5,
-        color: "#000",
-        dashArray: "",
-        fillOpacity: 0,
-      },
-    }).addTo(this.selectedLayer);
+        const selectedCountryGeoJSON = this._countriesCoordinates.find(
+            (el) => el.id === this._selectCountry
+        );
 
-    const highlightFeature = (e) => {
-      const layer = e.target;
-      layer.setStyle(setSelectedStyle());
 
-      layer.bringToFront();
-      this.selectedLayer.eachLayer(function (selectedCountryLayer) {
-        selectedCountryLayer.bringToFront();
-      });
-    };
 
-    function resetHighlight(e) {
-      geojson.resetStyle(e.target);
+        const setGlobalStyle = (feature) => {
+            return {
+                fillColor: this.getColorForLayers(feature[this._dataType][this._selectParam]),
+                weight: 2,
+                opacity: 1,
+                color: "white",
+                dashArray: "3",
+                fillOpacity: 0.7,
+            };
+        };
+
+        function setSelectedStyle() {
+            return {
+                weight: 5,
+                color: "black",
+                dashArray: "",
+                fillOpacity: 0.7,
+            };
+        }
+
+
+        let geojson = L.geoJson(this._countriesCoordinates, {
+            style: setGlobalStyle,
+        }).addTo(this.layerGroup);
+
+        L.geoJson(selectedCountryGeoJSON, {
+            style: {
+                fillColor: "",
+                weight: 5,
+                color: "#000",
+                dashArray: "",
+                fillOpacity: 0,
+            },
+        }).addTo(this.selectedLayer);
+
+        const highlightFeature = (e) => {
+            const layer = e.target;
+            layer.setStyle(setSelectedStyle());
+            layer.bringToFront();
+            this.selectedLayer.eachLayer(function(selectedCountryLayer) {
+                selectedCountryLayer.bringToFront();
+            });
+        };
+
+        const openPopupInfo = (e) => {
+            const layer = e.target;
+            layer.bindPopup(`${layer.feature.properties.name}`).openPopup();
+
+        }
+
+        const closePopupInfo = (e) => {
+            const layer = e.target;
+            layer.closePopup();
+
+        }
+
+        function resetHighlight(e) {
+            geojson.resetStyle(e.target);
+        }
+
+
+
+        const onEachFeature = (feature, layer) => {
+            layer.addEventListener("mouseover", highlightFeature);
+            layer.addEventListener("mouseout", resetHighlight);
+            layer.addEventListener("mouseover", openPopupInfo);
+            layer.addEventListener("mouseout", closePopupInfo);
+
+        }
+
+
+        geojson = L.geoJson(this._countriesCoordinates, {
+            style: setGlobalStyle,
+            onEachFeature: onEachFeature,
+        }).addTo(this.layerGroup);
+
+
+        this.selectedLayer.eachLayer((selectedCountryLayer) => {
+            selectedCountryLayer.bringToFront();
+        });
+
+
+        this.geojson = geojson;
+        console.log(this.geojson)
+
+        this.layerGroup.eachLayer(la => {
+
+            la.eachLayer(qw => {
+                qw.addEventListener('click', function() {
+                    console.log(qw.feature.id);
+                })
+
+            })
+        })
+
+
+
+
     }
 
-    const getSelectedCountry = (e) => {
-      this._selectCountry = e.target.feature.id;
+    _generateHTML() {
+            return `
+      <div class="legend">
+      ${this.colorsForLayers.map((color, ind) =>{
+        return `
+        <div class="legend-item">
+        <div class="legend-color" style="background-color: ${color}"></div>
+        <div class="legend-param">${this._selectParam}>${this.paramBorders[ind]}</div>
+        </div>
+        `
+      }).join('')}
+      </div>
+      `
     }
-    console.log(this._selectCountryName)
-
-    function onEachFeature(feature, layer) {
-      layer.addEventListener("mouseover", highlightFeature);
-      layer.addEventListener("mouseout", resetHighlight);
-      layer.addEventListener('click', getSelectedCountry);
-    }
-
-    
-
-    geojson = L.geoJson(this._countriesCoordinates, {
-      style: setGlobalStyle,
-      onEachFeature: onEachFeature,
-    }).addTo(this.layerGroup);
-
-
-    this.selectedLayer.eachLayer((selectedCountryLayer) => {
-      selectedCountryLayer.bringToFront();
-    });
-
-  
-
-
-  }
 }
 
 export default new MapView();
