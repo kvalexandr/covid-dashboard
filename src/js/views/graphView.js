@@ -1,3 +1,4 @@
+import { fomatNumber } from '../core/utils';
 import Chart from 'chart.js';
 import View from './View';
 
@@ -14,27 +15,41 @@ class GraphView extends View {
     this._selectParam = state.selectParam;
     this._selectCountry = state.selectCountry;
 
-    const chart = new Chart(this._graphElement, {
+    this.chart = new Chart(this._graphElement, {
       type: 'bar',
       data: {
         labels: state.timeline.map(el => el.last_update),
         datasets: [{
-          label: '# of Votes',
           data: state.timeline.map(el => el[`total_${this._selectParam}`]),
           borderWidth: 1
         }]
       },
       options: {
+        legend: {
+          display: false
+        },
         scales: {
           yAxes: [{
             ticks: {
               beginAtZero: true,
             }
           }]
+        },
+        tooltips: {
+          callbacks: {
+            label: function (tooltipItem, data) {
+              var label = '';
+
+              if (label) {
+                label += ': ';
+              }
+              label += fomatNumber(tooltipItem.yLabel);
+              return label;
+            }
+          }
         }
       }
     });
-    chart.update();
 
     this._parentElement.innerHTML = '';
     this._parentElement.insertAdjacentHTML('afterbegin', this._generateHTML());

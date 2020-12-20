@@ -144,7 +144,13 @@ export const searchCountry = async function (searchCountry = '') {
 };
 
 export const loadTimeline = async function () {
-  const res = await fetch(`${API_URL2}/timeline`);
+  let res = '';
+  if (state.selectCountry) {
+    res = await fetch(`${API_URL2}/timeline/${state.selectCountry}`);
+  } else {
+    res = await fetch(`${API_URL2}/timeline`);
+  }
+
   const data = await res.json();
   //console.log(res);
   console.log(data);

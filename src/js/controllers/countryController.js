@@ -15,6 +15,7 @@ class CountryController extends Controller {
     model.state.selectCountry = newCountry;
     await model.loadCountry();
     super.tableView().render(model.state);
+    super.graphView().render(model.state);
   }
 
   async searchCountry(searchValue) {
