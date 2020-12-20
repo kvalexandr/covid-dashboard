@@ -1,22 +1,19 @@
 import * as model from '../models/model';
-import tableView from '../views/tableView';
-import countryView from '../views/countryView';
+import Controller from './Controller';
 
-class TableController {
-  async showTableData() {
-    await model.loadAll();
-    tableView.render(model.state);
+class TableController extends Controller {
+  constructor() {
+    super();
   }
 
-  setDataType(newDataType) {
-    model.state.dataType = newDataType;
-    tableView.render(model.state);
-    countryView.render(model.state);
+  async showTableData() {
+    await model.loadAll();
+    super.tableView().render(model.state);
   }
 
   init() {
     this.showTableData();
-    tableView.addHandlerChangeTab(this.setDataType);
+    super.tableView().addHandlerChangeTab(this.setDataType);
   }
 }
 
