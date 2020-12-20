@@ -1,9 +1,11 @@
 .data-tab {
   display: flex;
+  flex-wrap: wrap;
   margin-bottom: 30px;
 
   .data-info {
     margin-right: 30px;
+    margin-bottom: 20px;
     font-weight: 600;
 
     &:last-child {

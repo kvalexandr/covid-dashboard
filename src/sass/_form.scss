@@ -1,9 +1,16 @@
-.btn-tab {
-  background: #43a047;
-  
-  &.active, &:hover {
-    background: #1b5e20;
-    color: #fff;
+.btn-container {
+  display: flex;
+  flex-wrap: wrap;
+
+  .btn-tab {
+    background: #43a047;
+    min-width: 125px;
+    margin: 10px 0 10px 0;
+    
+    &.active, &:hover {
+      background: #1b5e20;
+      color: #fff;
+    }
   }
 }
 

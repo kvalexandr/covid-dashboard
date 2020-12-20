@@ -28,10 +28,16 @@ export default class View {
 
   _generateHTMLTab(dataType) {
     return `
-    <a class="waves-effect waves-light btn-small btn-tab${this._dataType === 'allData' ? ' active' : ''}" data-type="allData">Data all</a>
-    <a class="waves-effect waves-light btn-small btn-tab${this._dataType === 'todayData' ? ' active' : ''}" data-type="todayData">Data day</a>
-    <a class="waves-effect waves-light btn-small btn-tab${this._dataType === 'oneHundredThousandData' ? ' active' : ''}" data-type="oneHundredThousandData">Data all 100</a>
-    <a class="waves-effect waves-light btn-small btn-tab${this._dataType === 'todayOneHundredThousandData' ? ' active' : ''}" data-type="todayOneHundredThousandData">Data day 100</a>
+    <div class="btn-container">
+      <div class="btn-container-alldata s12 m6">
+        <a class="waves-effect waves-light btn-small btn-tab${dataType === 'allData' ? ' active' : ''}" data-type="allData">Data all</a>
+        <a class="waves-effect waves-light btn-small btn-tab${dataType === 'todayData' ? ' active' : ''}" data-type="todayData">Data day</a>
+      </div>
+      <div class="btn-container-data100 s12 m6">
+        <a class="waves-effect waves-light btn-small btn-tab${dataType === 'oneHundredThousandData' ? ' active' : ''}" data-type="oneHundredThousandData">Data all 100</a>
+        <a class="waves-effect waves-light btn-small btn-tab${dataType === 'todayOneHundredThousandData' ? ' active' : ''}" data-type="todayOneHundredThousandData">Data day 100</a>
+      </div>
+    </div>
     `;
   }
 }
