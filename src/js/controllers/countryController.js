@@ -35,7 +35,7 @@ class CountryController {
 
   init() {
     this.showCountryData();
-    countryView.addHandlerChangeList(this.setDataType);
+    countryView.addHandlerChangeTab(this.setDataType);
     countryView.addHandlerSelectParams(this.setSelectParams);
     countryView.addHandlerSelectCountry(this.setCountry);
     countryView.addHandlerSearchCountry(this.searchCountry);
