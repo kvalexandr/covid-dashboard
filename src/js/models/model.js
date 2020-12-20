@@ -1,4 +1,4 @@
-import { API_URl, COUNT_PEOPLE } from '../config';
+import { API_URL, API_URL2, COUNT_PEOPLE } from '../config';
 
 export const state = {
   allData: {},
@@ -12,11 +12,12 @@ export const state = {
   searchCountryResult: null,
   allCountry: [],
   oneCountry: {},
+  timeline: [],
 };
 
 export const loadAll = async function () {
   try {
-    const res = await fetch(`${API_URl}/all`);
+    const res = await fetch(`${API_URL}/all`);
     const data = await res.json();
     //console.log(res);
     //console.log(data);
@@ -53,7 +54,7 @@ export const loadAll = async function () {
 
 export const loadCountryAll = async function () {
   try {
-    const res = await fetch(`${API_URl}/countries?sort=cases`);
+    const res = await fetch(`${API_URL}/countries?sort=cases`);
     const data = await res.json();
     //console.log(res);
     //console.log(data);
@@ -94,7 +95,7 @@ export const loadCountryAll = async function () {
 export const loadCountry = async function () {
   try {
     //console.log(state.selectCountry);
-    const res = await fetch(`${API_URl}/countries/${state.selectCountry}`);
+    const res = await fetch(`${API_URL}/countries/${state.selectCountry}`);
     const data = await res.json();
     //console.log(res);
     //console.log(data);
@@ -140,4 +141,13 @@ export const searchCountry = async function (searchCountry = '') {
   } catch (err) {
     console.error(err);
   }
+};
+
+export const loadTimeline = async function () {
+  const res = await fetch(`${API_URL2}/timeline`);
+  const data = await res.json();
+  //console.log(res);
+  console.log(data);
+  if (!res.ok) throw new Error(`${data.message} (${res.status})`);
+  state.timeline = data.reverse();
 };

@@ -65,7 +65,8 @@ class CountryView {
     const countryList = this._data.map((el) => {
       return {
         isActive: el.countryInfo.iso3 === this._selectCountry,
-        code: el.countryInfo.iso3,
+        codeISO3: el.countryInfo.iso3,
+        codeISO2: el.countryInfo.iso2,
         flag: el.countryInfo.flag,
         name: el.country,
         covidInfo: el[this._dataType][this._selectParam],
@@ -77,7 +78,7 @@ class CountryView {
 
     return countryList.map((country) => {
       return `
-        <tr class="country-item${country.isActive ? ' active' : ''}" data-country="${country.code}">
+        <tr class="country-item${country.isActive ? ' active' : ''}" data-country="${country.codeISO3}" data-country-iso2="${country.codeISO2}">
           <td>
             <img src='${country.flag}'> ${country.name} <span class="country-item__covid-info">${country.covidInfoFormat}
           </td>

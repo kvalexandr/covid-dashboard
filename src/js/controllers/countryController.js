@@ -1,6 +1,7 @@
 import * as model from '../models/model';
 import tableView from '../views/tableView';
 import countryView from '../views/countryView';
+import graphView from '../views/graphView';
 
 class CountryController {
   async showCountryData() {
@@ -12,6 +13,7 @@ class CountryController {
     model.state.dataType = newDataType;
     tableView.render(model.state);
     countryView.render(model.state);
+    graphView.render(model.state);
   }
 
   setSelectParams(newParam) {
