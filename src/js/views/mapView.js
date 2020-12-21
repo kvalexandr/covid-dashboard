@@ -37,11 +37,11 @@ class MapView {
 
     addHandlerSelectCountryOnMap(handler) {
         this.geojson.eachLayer(la => {
-            la.addEventListener('click', function() {
+            la.addEventListener('click', () => {
                 handler(la.feature.id);
                 setTimeout(() => {
                     document.querySelector('.country-item.active').scrollIntoView({ block: "center", behavior: "smooth" });
-                }, 100)
+                }, 500)
 
             })
         })
@@ -77,6 +77,7 @@ class MapView {
         const selectedCountryGeoJSON = this._countriesCoordinates.find(
             (el) => el.id === this._selectCountry
         );
+
 
 
 
@@ -157,24 +158,14 @@ class MapView {
         }).addTo(this.layerGroup);
 
 
-        this.selectedLayer.eachLayer((selectedCountryLayer) => {
-            selectedCountryLayer.bringToFront();
-        });
-
-
-        this.geojson = geojson;
-        console.log(this.geojson)
-
-        this.layerGroup.eachLayer(la => {
-
-            la.eachLayer(qw => {
-                qw.addEventListener('click', function() {
-                    console.log(qw.feature.id);
-                })
-
-            })
+        this.selectedLayer.eachLayer((e) => {
+            if (this._selectCountry) {
+            e.bringToFront();
+            this.map.fitBounds(e.getBounds(), {maxZoom: 3});
+            }
         })
 
+        this.geojson = geojson;
 
 
 
