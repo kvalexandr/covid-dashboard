@@ -1,42 +1,35 @@
-body {
-  background-color: #edf2f7;
-}
-
 .data-tab {
-  font-size: .9rem;
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 30px;
 
-  &.active {
-    display: block;
-  }
-}
+  .data-info {
+    margin-right: 30px;
+    margin-bottom: 20px;
+    font-weight: 600;
 
-.btn-tab {
-  
-
-  &.active {
-    background: rgb(85, 161, 89);
-    color: #fff;
-  }
-}
-
-.data-country {
-  height: 300px;
-  overflow-y: scroll;
-  overflow-x: hidden;
-  border: 1px solid #ccc;
-  padding: 5px;
-  margin-bottom: 10px;
-
-  td {
-    padding: 5px;
-    cursor: pointer;
-
-    &:hover {
-      background-color: #b2dfdb;
+    &:last-child {
+      margin-right: 0;
     }
-  }
 
-  .active td {
-    background-color: #b2dfdb;
+    &__title {
+      font-size: 18px;
+    }
+
+    &__number {
+      font-size: 24px;
+    }
+
+    &--deaths {
+      color: #718096;
+    }
+
+    &--recovered {
+      color: #38a169;
+    }
+
+    &--cases {
+      color: #e53e3e;
+    }
   }
 }
