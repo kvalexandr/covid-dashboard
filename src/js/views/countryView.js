@@ -72,14 +72,12 @@ class CountryView extends View {
 
   _generateHTML() {
     return `
-    ${super._generateHTMLSelect(this._selectParam)}
-
     <div class="country-container">
       <table class="highlight table-country">
         ${this._generateCountryListHTML()}
       </table>
     </div>
-
+    ${super._generateHTMLSelect(this._selectParam)}
     ${super._generateHTMLTab(this._dataType)}
     `;
   }
