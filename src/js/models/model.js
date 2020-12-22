@@ -19,9 +19,10 @@ export const loadAll = async function () {
   try {
     const res = await fetch(`${API_URL}/all`);
     const data = await res.json();
-    //console.log(res);
-    //console.log(data);
+
     if (!res.ok) throw new Error(`${data.message} (${res.status})`);
+
+    const countPeople = state.selectCountry ? state.oneCountry.population : COUNT_PEOPLE;
 
     state.allData = {
       cases: data.cases,
@@ -36,15 +37,15 @@ export const loadAll = async function () {
     };
 
     state.oneHundredThousandData = {
-      cases: Math.round(data.cases * 100000 / COUNT_PEOPLE),
-      deaths: Math.round(data.deaths * 100000 / COUNT_PEOPLE),
-      recovered: Math.round(data.recovered * 100000 / COUNT_PEOPLE),
+      cases: Math.round(data.cases * 100000 / countPeople),
+      deaths: Math.round(data.deaths * 100000 / countPeople),
+      recovered: Math.round(data.recovered * 100000 / countPeople),
     };
 
     state.todayOneHundredThousandData = {
-      cases: Math.round(data.todayCases * 100000 / COUNT_PEOPLE),
-      deaths: Math.round(data.todayDeaths * 100000 / COUNT_PEOPLE),
-      recovered: Math.round(data.todayRecovered * 100000 / COUNT_PEOPLE),
+      cases: Math.round(data.todayCases * 100000 / countPeople),
+      deaths: Math.round(data.todayDeaths * 100000 / countPeople),
+      recovered: Math.round(data.todayRecovered * 100000 / countPeople),
     };
 
   } catch (err) {
@@ -56,11 +57,12 @@ export const loadCountryAll = async function () {
   try {
     const res = await fetch(`${API_URL}/countries?sort=cases`);
     const data = await res.json();
-    //console.log(res);
-    //console.log(data);
+
     if (!res.ok) throw new Error(`${data.message} (${res.status})`);
 
     data.forEach((el) => {
+      const countPeople = el.population ? el.population : COUNT_PEOPLE;
+
       state.allCountry.push({
         country: el.country,
         countryInfo: el.countryInfo,
@@ -75,14 +77,14 @@ export const loadCountryAll = async function () {
           recovered: el.todayRecovered,
         },
         oneHundredThousandData: {
-          cases: Math.round(el.cases * 100000 / COUNT_PEOPLE),
-          deaths: Math.round(el.deaths * 100000 / COUNT_PEOPLE),
-          recovered: Math.round(el.recovered * 100000 / COUNT_PEOPLE),
+          cases: Math.round(el.cases * 100000 / countPeople),
+          deaths: Math.round(el.deaths * 100000 / countPeople),
+          recovered: Math.round(el.recovered * 100000 / countPeople),
         },
         todayOneHundredThousandData: {
-          cases: Math.round(el.todayCases * 100000 / COUNT_PEOPLE),
-          deaths: Math.round(el.todayDeaths * 100000 / COUNT_PEOPLE),
-          recovered: Math.round(el.todayRecovered * 100000 / COUNT_PEOPLE),
+          cases: Math.round(el.todayCases * 100000 / countPeople),
+          deaths: Math.round(el.todayDeaths * 100000 / countPeople),
+          recovered: Math.round(el.todayRecovered * 100000 / countPeople),
         }
       });
     });
@@ -94,12 +96,13 @@ export const loadCountryAll = async function () {
 
 export const loadCountry = async function () {
   try {
-    //console.log(state.selectCountry);
     const res = await fetch(`${API_URL}/countries/${state.selectCountry}`);
     const data = await res.json();
-    //console.log(res);
-    //console.log(data);
+    ;
     if (!res.ok) throw new Error(`${data.message} (${res.status})`);
+
+    if (state.selectCountry) state.oneCountry = data;
+    const countPeople = state.selectCountry ? state.oneCountry.population : COUNT_PEOPLE;
 
     state.allData = {
       cases: data.cases,
@@ -114,19 +117,16 @@ export const loadCountry = async function () {
     };
 
     state.oneHundredThousandData = {
-      cases: Math.round(data.cases * 100000 / COUNT_PEOPLE),
-      deaths: Math.round(data.deaths * 100000 / COUNT_PEOPLE),
-      recovered: Math.round(data.recovered * 100000 / COUNT_PEOPLE),
+      cases: Math.round(data.cases * 100000 / countPeople),
+      deaths: Math.round(data.deaths * 100000 / countPeople),
+      recovered: Math.round(data.recovered * 100000 / countPeople),
     };
 
     state.todayOneHundredThousandData = {
-      cases: Math.round(data.todayCases * 100000 / COUNT_PEOPLE),
-      deaths: Math.round(data.todayDeaths * 100000 / COUNT_PEOPLE),
-      recovered: Math.round(data.todayRecovered * 100000 / COUNT_PEOPLE),
+      cases: Math.round(data.todayCases * 100000 / countPeople),
+      deaths: Math.round(data.todayDeaths * 100000 / countPeople),
+      recovered: Math.round(data.todayRecovered * 100000 / countPeople),
     };
-
-
-    //console.log(state.allCountry);
 
   } catch (err) {
     console.error(err);
@@ -147,9 +147,9 @@ export const loadTimeline = async function () {
   let res = '';
 
   if (state.selectCountry) {
-    res = await fetch(`${API_URL}/historical/${state.selectCountry}?lastdays=366`);
+    res = await fetch(`${API_URL}/historical/${state.selectCountry}?lastdays=all`);
   } else {
-    res = await fetch(`${API_URL}/historical/all?lastdays=366`);
+    res = await fetch(`${API_URL}/historical/all?lastdays=all`);
   }
   const data = await res.json();
 
@@ -158,12 +158,57 @@ export const loadTimeline = async function () {
   const allData = !state.selectCountry ? data : data.timeline;
   state.timeline['allData'] = allData;
 
-  let casesOneHundredThousandData = {};
+  let numPred = 0;
+  const countPeople = state.selectCountry ? state.oneCountry.population : COUNT_PEOPLE;
+
+  let todayDataCases = {};
+  let oneHundredThousandDataCases = {};
+  let todayOneHundredThousandDataCases = {};
   for (const [date, num] of Object.entries(allData.cases)) {
-    casesOneHundredThousandData[date] = Math.round(num * 100000 / COUNT_PEOPLE);
+    const daily = (num - numPred) < 0 ? 0 : num - numPred;
+    todayDataCases[date] = daily;
+    oneHundredThousandDataCases[date] = Math.round(num * 100000 / countPeople);
+    todayOneHundredThousandDataCases[date] = Math.round(daily * 100000 / countPeople);
+    numPred = num;
   }
-  state.timeline['oneHundredThousandData'] = {
-    cases: Object.keys(allData.cases).map(date => { date: allData.cases[date] })
+
+  let todayDataDeaths = {};
+  let oneHundredThousandDataDeaths = {};
+  let todayOneHundredThousandDataDeaths = {};
+  for (const [date, num] of Object.entries(allData.deaths)) {
+    const daily = (num - numPred) < 0 ? 0 : num - numPred;
+    todayDataDeaths[date] = daily;
+    oneHundredThousandDataDeaths[date] = Math.round(num * 100000 / countPeople);
+    todayOneHundredThousandDataDeaths[date] = Math.round(daily * 100000 / countPeople);
+    numPred = num;
+  }
+
+  let todayDataRecovered = {};
+  let oneHundredThousandDataRecovered = {};
+  let todayOneHundredThousandDataRecovered = {};
+  for (const [date, num] of Object.entries(allData.recovered)) {
+    const daily = (num - numPred) < 0 ? 0 : num - numPred;
+    todayDataRecovered[date] = daily;
+    oneHundredThousandDataRecovered[date] = Math.round(num * 100000 / countPeople);
+    todayOneHundredThousandDataRecovered[date] = Math.round(daily * 100000 / countPeople);
+    numPred = num;
+  }
+
+  state.timeline['todayData'] = {
+    cases: todayDataCases,
+    deaths: todayDataDeaths,
+    recovered: todayDataRecovered,
   };
-  console.log(state.timeline);
+
+  state.timeline['oneHundredThousandData'] = {
+    cases: oneHundredThousandDataCases,
+    deaths: oneHundredThousandDataDeaths,
+    recovered: oneHundredThousandDataRecovered,
+  };
+
+  state.timeline['todayOneHundredThousandData'] = {
+    cases: todayOneHundredThousandDataCases,
+    deaths: todayOneHundredThousandDataRecovered,
+    recovered: todayOneHundredThousandDataRecovered,
+  };
 };
