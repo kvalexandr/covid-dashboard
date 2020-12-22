@@ -17,6 +17,7 @@ class CountryController extends Controller {
     await model.loadTimeline();
     super.tableView().render(model.state);
     super.graphView().render(model.state);
+    super.countryView().render(model.state);
   }
 
   async searchCountry(searchValue) {

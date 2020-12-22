@@ -5,6 +5,7 @@ class CountryView extends View {
     super();
     this._parentElement = document.querySelector('.country');
     this._searchElement = document.querySelector('.search-country');
+    this._currentCountryElement = document.querySelector('.current-country');
     this._data = {};
   }
 
@@ -14,8 +15,10 @@ class CountryView extends View {
     this._selectParam = state.selectParam;
     this._selectCountry = state.selectCountry;
     this._searchCountry = state.searchCountry;
+    this._oneCountry = state.oneCountry;
     this._parentElement.innerHTML = '';
     this._parentElement.insertAdjacentHTML('afterbegin', this._generateHTML());
+    this._currentCountryElement.innerHTML = this._selectCountry ? ` - ${this._oneCountry.country}` : ' - Worldwide';
   }
 
   addHandlerSelectCountry(handler) {
@@ -30,6 +33,7 @@ class CountryView extends View {
       countryItem.classList.add('active');
 
       const country = countryItem.getAttribute('data-country');
+
       handler(country);
     });
   }

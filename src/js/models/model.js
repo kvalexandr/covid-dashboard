@@ -147,9 +147,9 @@ export const loadTimeline = async function () {
   let res = '';
 
   if (state.selectCountry) {
-    res = await fetch(`${API_URL}/historical/${state.selectCountry}?lastdays=all`);
+    res = await fetch(`${API_URL}/historical/${state.selectCountry}?lastdays=366`);
   } else {
-    res = await fetch(`${API_URL}/historical/all?lastdays=all`);
+    res = await fetch(`${API_URL}/historical/all?lastdays=366`);
   }
   const data = await res.json();
 
