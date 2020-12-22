@@ -62,7 +62,7 @@ class CountryView extends View {
 
     return countryList.map((country) => {
       return `
-        <tr class="country-item${country.isActive ? ' active' : ''}" data-country="${country.codeISO3}" data-country-iso2="${country.codeISO2}">
+        <tr class="country-item${country.isActive ? ' active' : ''}" data-country="${country.codeISO3}">
           <td>
             <img src='${country.flag}'> ${country.name} <span class="country-item__covid-info">${country.covidInfoFormat}
           </td>

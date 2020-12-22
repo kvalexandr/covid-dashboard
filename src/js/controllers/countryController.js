@@ -14,6 +14,7 @@ class CountryController extends Controller {
   async setCountry(newCountry) {
     model.state.selectCountry = newCountry;
     await model.loadCountry();
+    await model.loadTimeline();
     super.tableView().render(model.state);
     super.graphView().render(model.state);
   }

@@ -1,4 +1,4 @@
-import { API_URL, API_URL2, COUNT_PEOPLE } from '../config';
+import { API_URL, COUNT_PEOPLE } from '../config';
 
 export const state = {
   allData: {},
@@ -145,15 +145,25 @@ export const searchCountry = async function (searchCountry = '') {
 
 export const loadTimeline = async function () {
   let res = '';
-  if (state.selectCountry) {
-    res = await fetch(`${API_URL2}/timeline/${state.selectCountry}`);
-  } else {
-    res = await fetch(`${API_URL2}/timeline`);
-  }
 
+  if (state.selectCountry) {
+    res = await fetch(`${API_URL}/historical/${state.selectCountry}?lastdays=366`);
+  } else {
+    res = await fetch(`${API_URL}/historical/all?lastdays=366`);
+  }
   const data = await res.json();
-  //console.log(res);
-  console.log(data);
+
   if (!res.ok) throw new Error(`${data.message} (${res.status})`);
-  state.timeline = data.reverse();
+
+  const allData = !state.selectCountry ? data : data.timeline;
+  state.timeline['allData'] = allData;
+
+  let casesOneHundredThousandData = {};
+  for (const [date, num] of Object.entries(allData.cases)) {
+    casesOneHundredThousandData[date] = Math.round(num * 100000 / COUNT_PEOPLE);
+  }
+  state.timeline['oneHundredThousandData'] = {
+    cases: Object.keys(allData.cases).map(date => { date: allData.cases[date] })
+  };
+  console.log(state.timeline);
 };
