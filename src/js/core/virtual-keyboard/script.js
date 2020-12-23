@@ -59,6 +59,7 @@ const Keyboard = {
       element.addEventListener('click', (e) => {
         this.open(element.value, currentValue => {
           element.value = currentValue;
+          element.dispatchEvent(new Event('input'));
           this.properties.keyboardInput.focus();
         });
 
