@@ -1,24 +1,28 @@
-import { API_URl, COUNT_PEOPLE } from '../config';
-import countriesCoordinates from '../border-coordinates';
-import countries from '../border-coordinates';
+import { API_URL, API_URL2, COUNT_PEOPLE } from '../config';
+import countriesCoordinates from '../borderCoordinates';
+
 
 export const state = {
   allData: {},
+  globalData: {},
   todayData: {},
   oneHundredThousandData: {},
   todayOneHundredThousandData: {},
   dataType: 'allData',
   selectParam: 'cases',
   selectCountry: '',
+  searchCountry: '',
+  searchCountryResult: null,
   allCountry: [],
   oneCountry: {},
   provinces: [],
   countriesCoordinates: countriesCoordinates,
+  timeline: [],
 };
 
 export const loadAll = async function () {
   try {
-    const res = await fetch(`${API_URl}/all`);
+    const res = await fetch(`${API_URL}/all`);
     const data = await res.json();
     //console.log(res);
     //console.log(data);
@@ -29,6 +33,8 @@ export const loadAll = async function () {
       deaths: data.deaths,
       recovered: data.recovered,
     };
+
+    
 
     state.todayData = {
       cases: data.todayCases,
@@ -48,6 +54,29 @@ export const loadAll = async function () {
       recovered: Math.round(data.todayRecovered * 100000 / COUNT_PEOPLE),
     };
 
+    state.globalData = {
+      allData: {
+      cases: data.cases,
+      deaths: data.deaths,
+      recovered: data.recovered,
+      },
+      todayData: {
+        cases: data.todayCases,
+        deaths: data.todayDeaths,
+        recovered: data.todayRecovered,
+      },
+      oneHundredThousandData: {
+        cases: Math.round(data.cases * 100000 / COUNT_PEOPLE),
+        deaths: Math.round(data.deaths * 100000 / COUNT_PEOPLE),
+        recovered: Math.round(data.recovered * 100000 / COUNT_PEOPLE),
+      },
+      todayOneHundredThousandData: {
+        cases: Math.round(data.todayCases * 100000 / COUNT_PEOPLE),
+        deaths: Math.round(data.todayDeaths * 100000 / COUNT_PEOPLE),
+        recovered: Math.round(data.todayRecovered * 100000 / COUNT_PEOPLE),
+      }
+    }
+
   } catch (err) {
     console.error(err);
   }
@@ -55,12 +84,11 @@ export const loadAll = async function () {
 
 export const loadCountryAll = async function () {
   try {
-    const res = await fetch(`${API_URl}/countries?sort=cases`);
+    const res = await fetch(`${API_URL}/countries?sort=cases`);
     const data = await res.json();
     //console.log(res);
     //console.log(data);
     if (!res.ok) throw new Error(`${data.message} (${res.status})`);
-
     data.forEach((el) => {
       state.allCountry.push({
         country: el.country,
@@ -105,7 +133,7 @@ export const loadCountryAll = async function () {
 export const loadCountry = async function () {
   try {
     //console.log(state.selectCountry);
-    const res = await fetch(`${API_URl}/countries/${state.selectCountry}`);
+    const res = await fetch(`${API_URL}/countries/${state.selectCountry}`);
     const data = await res.json();
     //console.log(res);
     //console.log(data);
@@ -144,8 +172,8 @@ export const loadCountry = async function () {
 };
 
 
-export const addCovidDataToCoordinates = function () {
-
+export const addCovidDataToCoordinates = async function () {
+  try {
  state.allCountry.forEach((ind) => {
   state.countriesCoordinates.forEach((el) => {
   if (ind.countryInfo.iso3 === el.id) {
@@ -156,46 +184,37 @@ export const addCovidDataToCoordinates = function () {
   }
   })
  })   
-
  state.countriesCoordinates = state.countriesCoordinates.filter(el => el.allData);
-
-}
-
-
-
-export const loadProvinces = async function() {
-  try {
-    const res = await fetch(`${API_URl}/jhucsse`);
-    const data = await res.json();
-    if (!res.ok) throw new Error(`${data.message} (${res.status})`);
-
-    data.forEach((el) => {
-      state.provinces.push({
-        country: el.country, 
-        province: el.province || el.county || el.country,
-        coordinates: el.coordinates,
-        stats: el.stats,
-        globalPercent: (el.stats.confirmed / state.allData.cases) * 100,
-      });
-    });
-
   } catch (err) {
-    console.error(err);
+    console.log(err);
   }
 }
 
-// loadProvinces();
 
 
-export const updateDataType = function (newDataType) {
-  state.dataType = newDataType;
-}
 
-export const updateSelectParam = function (newParam) {
-  state.selectParam = newParam;
-}
+export const searchCountry = async function (searchCountry = '') {
+  try {
+    const regExpCountry = new RegExp(searchCountry, 'i');
+    state.searchCountryResult = state.allCountry.filter(el => regExpCountry.test(el.country));
+    state.searchCountryResult
+  } catch (err) {
+    console.error(err);
+  }
+};
 
-export const updateSelectCountry = function (newCountry) {
-  state.selectCountry = newCountry;
-}
+export const loadTimeline = async function () {
+  let res = '';
+  if (state.selectCountry) {
+    res = await fetch(`${API_URL2}/timeline/${state.selectCountry}`);
+  } else {
+    res = await fetch(`${API_URL2}/timeline`);
+  }
 
+
+  const data = await res.json();
+  //console.log(res);
+  console.log(data);
+  if (!res.ok) throw new Error(`${data.message} (${res.status})`);
+  state.timeline = data.reverse();
+};

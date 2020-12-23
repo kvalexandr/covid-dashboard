@@ -1,33 +1,35 @@
 import * as model from '../models/model';
-import mapView from '../views/mapView';
-import tableView from '../views/tableView';
-import countryView from '../views/countryView';
+import Controller from './Controller';
 
-class MapController {
+class MapController extends Controller {
+
+    constructor() {
+        super();
+    }
+
     async showMap() {
-        await model.loadCountryAll();
-        await model.addCovidDataToCoordinates();
-        mapView.render(model.state);
-    }
-
-
-
-    async setCountryOnMap(newCountry) {
-        model.updateSelectCountry(newCountry);
-        await model.loadCountry();
-        countryView.render(model.state);
-        tableView.render(model.state);
-        mapView.render(model.state);
-        mapView.update();
-    }
-
-
-
-    async init() {
-        await this.showMap();
-        mapView.addHandlerSelectCountryOnMap(this.setCountryOnMap);
-
-    }
+        await model.loadAll();
+          model.addCovidDataToCoordinates();
+          super.mapView().render(model.state);
+      }
+  
+  
+  
+      async setCountryOnMap(newCountry) {
+          model.state.selectCountry = newCountry;
+          await model.loadCountry();
+          super.countryView().render(model.state);
+          super.tableView().render(model.state);
+          super.mapView().render(model.state);
+      }
+  
+  
+  
+        init() {
+          this.showMap();
+          super.mapView().addHandlerSelectCountryOnMap(this.setCountryOnMap);
+  
+      }
 }
 
 export default new MapController();
