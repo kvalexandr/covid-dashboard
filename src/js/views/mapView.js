@@ -5,8 +5,9 @@ class MapView extends View {
   constructor() {
     super();
     this._data = {};
-    this._parentElement = document.querySelector("#map");
+    this._parentElement = document.querySelector(".map-card");
     this._HTMLConatainer = document.querySelector(".map-info");
+    this._controlPanel = document.querySelector('.control-panel');
     this._map = L.map("map", { worldCopyJump: true }).setView([0, 0], 2);
     this._layerGroup = L.layerGroup().addTo(this._map);
     this._selectedLayer = L.layerGroup().addTo(this._map);
@@ -22,11 +23,13 @@ class MapView extends View {
     this._dataType = state.dataType;
     this._selectParam = state.selectParam;
     this._HTMLConatainer.innerHTML = "";
+    this._controlPanel.innerHTML = "";
     this._selectedLayer.clearLayers();
     this._layerGroup.clearLayers();
     this._countriesCoordinates = state.countriesCoordinates;
     this._generateMapLayers();
     this._HTMLConatainer.insertAdjacentHTML("afterbegin", this._generateHTML());
+    this._controlPanel.insertAdjacentHTML('afterbegin', this._generateControls());
   }
 
   addHandlerSelectCountryOnMap(handler) {
@@ -165,7 +168,7 @@ class MapView extends View {
       ];
       const paramBorders = [15, 10, 8, 4, 1, 0.3, 0.1, 0];
     return `
-      <div class="legend">
+         <div class="legend">
         <div class="legend-info">
         <div class="legend-chosen">Chosen<br> parameter</div>
         <div class="legend-system">Global %</div>
@@ -187,6 +190,14 @@ class MapView extends View {
       </div>
       `;
   }
+
+_generateControls() {
+  return `
+  ${super._generateHTMLSelect(this._selectParam)}
+  ${super._generateHTMLTab(this._dataType)}
+  `;
+}
+
 }
 
 export default new MapView();

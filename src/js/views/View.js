@@ -16,6 +16,7 @@ export default class View {
     });
   }
 
+
   _generateHTMLSelect(selectParam) {
     return `
     <select class="select">
@@ -40,4 +41,6 @@ export default class View {
     </div>
     `;
   }
+
+
 }

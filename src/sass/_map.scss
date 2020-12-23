@@ -45,3 +45,7 @@
 .legend-chosen {
     margin-left: 23px;
 }
+button {
+    position: absolute;
+    z-index: 10000;
+}

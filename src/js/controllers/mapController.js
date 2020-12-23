@@ -27,8 +27,9 @@ class MapController extends Controller {
   
         init() {
           this.showMap();
-          super.mapView().addHandlerSelectCountryOnMap(this.setCountryOnMap);
-  
+          super.mapView().addHandlerChangeTab(this.setDataType);
+          super.mapView().addHandlerSelectParams(this.setSelectParams);
+          super.mapView().addHandlerSelectCountryOnMap(this.setCountryOnMap);  
       }
 }
 
