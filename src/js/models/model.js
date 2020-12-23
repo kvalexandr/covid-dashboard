@@ -14,6 +14,8 @@ export const state = {
   searchCountryResult: null,
   allCountry: [],
   oneCountry: {},
+  provinces: [],
+  countriesCoordinates: countriesCoordinates,
   timeline: [],
   countriesCoordinates: countriesCoordinates
 };
@@ -32,6 +34,8 @@ export const loadAll = async function () {
       deaths: data.deaths,
       recovered: data.recovered,
     };
+
+    
 
     state.todayData = {
       cases: data.todayCases,
@@ -85,7 +89,6 @@ export const loadCountryAll = async function () {
     const data = await res.json();
 
     if (!res.ok) throw new Error(`${data.message} (${res.status})`);
-
     data.forEach((el) => {
       const countPeople = el.population ? el.population : COUNT_PEOPLE;
 
@@ -113,7 +116,13 @@ export const loadCountryAll = async function () {
           recovered: Math.round(el.todayRecovered * 100000 / countPeople),
         }
       });
+
+
     });
+
+    console.log(state);
+
+
 
   } catch (err) {
     console.error(err);
@@ -158,6 +167,28 @@ export const loadCountry = async function () {
     console.error(err);
   }
 };
+
+
+export const addCovidDataToCoordinates = async function () {
+  try {
+ state.allCountry.forEach((ind) => {
+  state.countriesCoordinates.forEach((el) => {
+  if (ind.countryInfo.iso3 === el.id) {
+    el.todayData = ind.todayData;
+    el.todayOneHundredThousandData = ind.todayOneHundredThousandData;
+    el.oneHundredThousandData = ind.oneHundredThousandData;
+    el.allData = ind.allData;
+  }
+  })
+ })   
+ state.countriesCoordinates = state.countriesCoordinates.filter(el => el.allData);
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+
+
 
 export const searchCountry = async function (searchCountry = '') {
   try {
@@ -238,22 +269,4 @@ export const loadTimeline = async function () {
     recovered: todayOneHundredThousandDataRecovered,
   };
 };
-
-export const addCovidDataToCoordinates = async function () {
-  try {
-    state.allCountry.forEach((ind) => {
-      state.countriesCoordinates.forEach((el) => {
-        if (ind.countryInfo.iso3 === el.id) {
-          el.todayData = ind.todayData;
-          el.todayOneHundredThousandData = ind.todayOneHundredThousandData;
-          el.oneHundredThousandData = ind.oneHundredThousandData;
-          el.allData = ind.allData;
-        }
-      })
-    })
-    state.countriesCoordinates = state.countriesCoordinates.filter(el => el.allData);
-  } catch (err) {
-    console.log(err);
-  }
-}
 

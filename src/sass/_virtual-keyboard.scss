@@ -13,6 +13,7 @@
   user-select: none;
   transition: bottom 0.4s;
   min-width: 500px;
+  z-index: 1000000000;
 }
 
 .keyboard--hidden {

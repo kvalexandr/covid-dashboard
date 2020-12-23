@@ -12,6 +12,7 @@ class CountryView extends View {
 
   render(state) {
     this._data = state.searchCountryResult || state.allCountry;
+    console.log(state);
     this._dataType = state.dataType;
     this._selectParam = state.selectParam;
     this._selectCountry = state.selectCountry;
@@ -66,6 +67,7 @@ class CountryView extends View {
     countryList.sort((a, b) => b.covidInfo - a.covidInfo);
 
     return countryList.map((country) => {
+
       return `
         <tr class="country-item${country.isActive ? ' active' : ''}" data-country="${country.codeISO3}">
           <td>
@@ -73,6 +75,7 @@ class CountryView extends View {
           </td>
         </tr>`;
     }).join('');
+    
   }
 
   _generateHTML() {

@@ -6,39 +6,38 @@ class MapView extends View {
   constructor() {
     super();
     this._data = {};
-    this._parentElement = document.querySelector("#map");
+    this._parentElement = document.querySelector(".map-card");
     this._HTMLConatainer = document.querySelector(".map-info");
+    this._controlPanel = document.querySelector('.control-panel');
     this._map = L.map("map", { worldCopyJump: true }).setView([0, 0], 2);
     this._layerGroup = L.layerGroup().addTo(this._map);
     this._selectedLayer = L.layerGroup().addTo(this._map);
     this.tileLayer = L.tileLayer(MAP_API_URL, {
       noWrap: false,
     }).addTo(this._map);
-
   }
 
   render(state) {
     this._selectCountry = state.selectCountry;
     this._globalData = state.globalData;
+    this._allCountry = state.allCountry;
+    console.log(this._allCountry);
     this._dataType = state.dataType;
     this._selectParam = state.selectParam;
     this._HTMLConatainer.innerHTML = "";
+    this._controlPanel.innerHTML = "";
     this._selectedLayer.clearLayers();
     this._layerGroup.clearLayers();
     this._countriesCoordinates = state.countriesCoordinates;
     this._generateMapLayers();
     this._HTMLConatainer.insertAdjacentHTML("afterbegin", this._generateHTML());
+    this._controlPanel.insertAdjacentHTML('afterbegin', this._generateControls());
   }
 
   addHandlerSelectCountryOnMap(handler) {
     this._parentElement.addEventListener("click", (e) => {
       if (!e.target.classList.contains("leaflet-interactive")) return;
       handler(this.currentLayer.feature.id);
-      //   document
-      //     .querySelector(
-      //       `.country-item[data-country=${this.currentLayer.feature.id}]`
-      //     )
-      //     .scrollIntoView({ block: "center", behavior: "smooth" });
     });
   }
 
@@ -70,7 +69,7 @@ class MapView extends View {
         fillColor: getColorForLayers(
           (feature[this._dataType][this._selectParam] /
             this._globalData[this._dataType][this._selectParam]) *
-          100
+            100
         ),
         weight: 2,
         opacity: 1,
@@ -114,7 +113,8 @@ class MapView extends View {
 
     const openPopupInfo = (e) => {
       const layer = e.target;
-      layer.bindPopup(`${layer.feature.properties.name}, ${this._selectParam}`).openPopup();
+      let parameterCases = this._allCountry.find(countryName => countryName.countryInfo.iso3 === layer.feature.id);
+      layer.bindPopup(`${layer.feature.properties.name}, ${parameterCases[this._dataType][this._selectParam]} ${this._selectParam}`).openPopup();
     };
 
     const closePopupInfo = (e) => {
@@ -188,6 +188,14 @@ class MapView extends View {
       </div>
       `;
   }
+
+_generateControls() {
+  return `
+  ${super._generateHTMLSelect(this._selectParam)}
+  ${super._generateHTMLTab(this._dataType)}
+  `;
+}
+
 }
 
 export default new MapView();
