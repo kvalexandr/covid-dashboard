@@ -1,5 +1,6 @@
 import { fomatNumber } from '../core/utils';
 import View from './View';
+
 class CountryView extends View {
   constructor() {
     super();

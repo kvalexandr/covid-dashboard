@@ -1,11 +1,5 @@
 export default class View {
   addHandlerChangeTab(handler) {
-    // this._parentElement.addEventListener('click', function (e) {
-    //   const btn = e.target.closest('.btn-tab');
-    //   if (!btn) return;
-    //   const dataType = btn.getAttribute('data-type');
-    //   handler(dataType);
-    // });
     this._parentElement.addEventListener('change', function (e) {
       const select = e.target.closest('.select-data-type');
       if (!select) return;

@@ -1,7 +1,9 @@
 import { API_URL, COUNT_PEOPLE } from '../config';
+import countriesCoordinates from '../borderCoordinates';
 
 export const state = {
   allData: {},
+  globalData: {},
   todayData: {},
   oneHundredThousandData: {},
   todayOneHundredThousandData: {},
@@ -13,6 +15,7 @@ export const state = {
   allCountry: [],
   oneCountry: {},
   timeline: [],
+  countriesCoordinates: countriesCoordinates
 };
 
 export const loadAll = async function () {
@@ -47,6 +50,29 @@ export const loadAll = async function () {
       deaths: Math.round(data.todayDeaths * 100000 / countPeople),
       recovered: Math.round(data.todayRecovered * 100000 / countPeople),
     };
+
+    state.globalData = {
+      allData: {
+        cases: data.cases,
+        deaths: data.deaths,
+        recovered: data.recovered,
+      },
+      todayData: {
+        cases: data.todayCases,
+        deaths: data.todayDeaths,
+        recovered: data.todayRecovered,
+      },
+      oneHundredThousandData: {
+        cases: Math.round(data.cases * 100000 / COUNT_PEOPLE),
+        deaths: Math.round(data.deaths * 100000 / COUNT_PEOPLE),
+        recovered: Math.round(data.recovered * 100000 / COUNT_PEOPLE),
+      },
+      todayOneHundredThousandData: {
+        cases: Math.round(data.todayCases * 100000 / COUNT_PEOPLE),
+        deaths: Math.round(data.todayDeaths * 100000 / COUNT_PEOPLE),
+        recovered: Math.round(data.todayRecovered * 100000 / COUNT_PEOPLE),
+      }
+    }
 
   } catch (err) {
     console.error(err);
@@ -212,3 +238,22 @@ export const loadTimeline = async function () {
     recovered: todayOneHundredThousandDataRecovered,
   };
 };
+
+export const addCovidDataToCoordinates = async function () {
+  try {
+    state.allCountry.forEach((ind) => {
+      state.countriesCoordinates.forEach((el) => {
+        if (ind.countryInfo.iso3 === el.id) {
+          el.todayData = ind.todayData;
+          el.todayOneHundredThousandData = ind.todayOneHundredThousandData;
+          el.oneHundredThousandData = ind.oneHundredThousandData;
+          el.allData = ind.allData;
+        }
+      })
+    })
+    state.countriesCoordinates = state.countriesCoordinates.filter(el => el.allData);
+  } catch (err) {
+    console.log(err);
+  }
+}
+
