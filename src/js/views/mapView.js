@@ -1,4 +1,5 @@
 import { MAP_API_URL } from "../config";
+import { fomatNumber } from '../core/utils';
 import View from "./View";
 import L from 'leaflet';
 
@@ -21,7 +22,6 @@ class MapView extends View {
     this._selectCountry = state.selectCountry;
     this._globalData = state.globalData;
     this._allCountry = state.allCountry;
-    console.log(this._allCountry);
     this._dataType = state.dataType;
     this._selectParam = state.selectParam;
     this._HTMLConatainer.innerHTML = "";
@@ -69,7 +69,7 @@ class MapView extends View {
         fillColor: getColorForLayers(
           (feature[this._dataType][this._selectParam] /
             this._globalData[this._dataType][this._selectParam]) *
-            100
+          100
         ),
         weight: 2,
         opacity: 1,
@@ -114,7 +114,7 @@ class MapView extends View {
     const openPopupInfo = (e) => {
       const layer = e.target;
       let parameterCases = this._allCountry.find(countryName => countryName.countryInfo.iso3 === layer.feature.id);
-      layer.bindPopup(`${layer.feature.properties.name}, ${parameterCases[this._dataType][this._selectParam]} ${this._selectParam}`).openPopup();
+      layer.bindPopup(`${layer.feature.properties.name}, ${fomatNumber(parameterCases[this._dataType][this._selectParam])} ${this._selectParam}`).openPopup();
     };
 
     const closePopupInfo = (e) => {
@@ -189,12 +189,12 @@ class MapView extends View {
       `;
   }
 
-_generateControls() {
-  return `
+  _generateControls() {
+    return `
   ${super._generateHTMLSelect(this._selectParam)}
   ${super._generateHTMLTab(this._dataType)}
   `;
-}
+  }
 
 }
 
