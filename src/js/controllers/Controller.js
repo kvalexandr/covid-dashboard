@@ -1,8 +1,8 @@
-import * as model from "../models/model";
-import tableView from "../views/tableView";
-import countryView from "../views/countryView";
-import graphView from "../views/graphView";
-import mapView from "../views/mapView";
+import * as model from '../models/model';
+import tableView from '../views/tableView';
+import countryView from '../views/countryView';
+import graphView from '../views/graphView';
+import mapView from '../views/mapView';
 
 export default class Controller {
   setDataType(newDataType) {

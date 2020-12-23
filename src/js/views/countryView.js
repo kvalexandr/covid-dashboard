@@ -1,10 +1,12 @@
 import { fomatNumber } from '../core/utils';
 import View from './View';
+
 class CountryView extends View {
   constructor() {
     super();
     this._parentElement = document.querySelector('.country');
     this._searchElement = document.querySelector('.search-country');
+    this._currentCountryElement = document.querySelector('.current-country');
     this._data = {};
   }
 
@@ -15,8 +17,10 @@ class CountryView extends View {
     this._selectParam = state.selectParam;
     this._selectCountry = state.selectCountry;
     this._searchCountry = state.searchCountry;
+    this._oneCountry = state.oneCountry;
     this._parentElement.innerHTML = '';
     this._parentElement.insertAdjacentHTML('afterbegin', this._generateHTML());
+    this._currentCountryElement.innerHTML = this._selectCountry ? ` - ${this._oneCountry.country}` : ' - Worldwide';
   }
 
   addHandlerSelectCountry(handler) {
@@ -31,6 +35,7 @@ class CountryView extends View {
       countryItem.classList.add('active');
 
       const country = countryItem.getAttribute('data-country');
+
       handler(country);
     });
   }
@@ -64,7 +69,7 @@ class CountryView extends View {
     return countryList.map((country) => {
 
       return `
-        <tr class="country-item${country.isActive ? ' active' : ''}" data-country="${country.codeISO3}" data-country-iso2="${country.codeISO2}">
+        <tr class="country-item${country.isActive ? ' active' : ''}" data-country="${country.codeISO3}">
           <td>
             <img src='${country.flag}'> ${country.name} <span class="country-item__covid-info">${country.covidInfoFormat}
           </td>
@@ -75,14 +80,12 @@ class CountryView extends View {
 
   _generateHTML() {
     return `
-    ${super._generateHTMLSelect(this._selectParam)}
-
     <div class="country-container">
       <table class="highlight table-country">
         ${this._generateCountryListHTML()}
       </table>
     </div>
-
+    ${super._generateHTMLSelect(this._selectParam)}
     ${super._generateHTMLTab(this._dataType)}
     `;
   }

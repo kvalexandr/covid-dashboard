@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
 @import 'materialize-css';
+@import '/node_modules/leaflet/dist/leaflet.css';
 
 @import './general';
 @import './form';
@@ -9,3 +10,4 @@
 @import './map';
 @import './virtual-keyboard';
 @import './graph';
+@import './footer';

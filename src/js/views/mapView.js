@@ -1,5 +1,6 @@
 import { MAP_API_URL } from "../config";
 import View from "./View";
+import L from 'leaflet';
 
 class MapView extends View {
   constructor() {
@@ -14,12 +15,13 @@ class MapView extends View {
     this.tileLayer = L.tileLayer(MAP_API_URL, {
       noWrap: false,
     }).addTo(this._map);
-   
   }
 
   render(state) {
     this._selectCountry = state.selectCountry;
     this._globalData = state.globalData;
+    this._allCountry = state.allCountry;
+    console.log(this._allCountry);
     this._dataType = state.dataType;
     this._selectParam = state.selectParam;
     this._HTMLConatainer.innerHTML = "";
@@ -36,11 +38,6 @@ class MapView extends View {
     this._parentElement.addEventListener("click", (e) => {
       if (!e.target.classList.contains("leaflet-interactive")) return;
       handler(this.currentLayer.feature.id);
-    //   document
-    //     .querySelector(
-    //       `.country-item[data-country=${this.currentLayer.feature.id}]`
-    //     )
-    //     .scrollIntoView({ block: "center", behavior: "smooth" });
     });
   }
 
@@ -53,18 +50,18 @@ class MapView extends View {
       return param > 15
         ? "#800026"
         : param > 10
-        ? "#BD0026"
-        : param > 8
-        ? "#E31A1C"
-        : param > 4
-        ? "#FC4E2A"
-        : param > 1
-        ? "#FD8D3C"
-        : param > 0.3
-        ? "#FEB24C"
-        : param > 0.1
-        ? "#FED976"
-        : "#FFEDA0";
+          ? "#BD0026"
+          : param > 8
+            ? "#E31A1C"
+            : param > 4
+              ? "#FC4E2A"
+              : param > 1
+                ? "#FD8D3C"
+                : param > 0.3
+                  ? "#FEB24C"
+                  : param > 0.1
+                    ? "#FED976"
+                    : "#FFEDA0";
     }
 
     const setGlobalStyle = (feature) => {
@@ -116,7 +113,8 @@ class MapView extends View {
 
     const openPopupInfo = (e) => {
       const layer = e.target;
-      layer.bindPopup(`${layer.feature.properties.name}, ${this._selectParam}`).openPopup();
+      let parameterCases = this._allCountry.find(countryName => countryName.countryInfo.iso3 === layer.feature.id);
+      layer.bindPopup(`${layer.feature.properties.name}, ${parameterCases[this._dataType][this._selectParam]} ${this._selectParam}`).openPopup();
     };
 
     const closePopupInfo = (e) => {
@@ -157,18 +155,18 @@ class MapView extends View {
 
   _generateHTML() {
     const colorsForLayers = [
-        "#800026",
-        "#BD0026",
-        "#E31A1C",
-        "#FC4E2A",
-        "#FD8D3C",
-        "#FEB24C",
-        "#FED976",
-        "#FFEDA0",
-      ];
-      const paramBorders = [15, 10, 8, 4, 1, 0.3, 0.1, 0];
+      "#800026",
+      "#BD0026",
+      "#E31A1C",
+      "#FC4E2A",
+      "#FD8D3C",
+      "#FEB24C",
+      "#FED976",
+      "#FFEDA0",
+    ];
+    const paramBorders = [15, 10, 8, 4, 1, 0.3, 0.1, 0];
     return `
-         <div class="legend">
+      <div class="legend">
         <div class="legend-info">
         <div class="legend-chosen">Chosen<br> parameter</div>
         <div class="legend-system">Global %</div>
