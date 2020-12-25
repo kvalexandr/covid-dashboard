@@ -10,7 +10,7 @@ class MapView extends View {
     this._parentElement = document.querySelector(".map-card");
     this._HTMLConatainer = document.querySelector(".map-info");
     this._controlPanel = document.querySelector('.control-panel');
-    this._map = L.map("map", { worldCopyJump: true }).setView([0, 0], 2);
+    this._map = L.map("map", { worldCopyJump: true }).setView([0, 0], 2).invalidateSize();
     this._layerGroup = L.layerGroup().addTo(this._map);
     this._selectedLayer = L.layerGroup().addTo(this._map);
     this.tileLayer = L.tileLayer(MAP_API_URL, {
@@ -42,6 +42,11 @@ class MapView extends View {
   }
 
   _generateMapLayers() {
+
+    this._parentElement.querySelector('.fullscreen-btn').addEventListener('click', () => {
+      this._map.invalidateSize();
+    })
+
     const selectedCountryGeoJSON = this._countriesCoordinates.find(
       (el) => el.id === this._selectCountry
     );
