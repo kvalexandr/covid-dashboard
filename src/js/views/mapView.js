@@ -42,6 +42,11 @@ class MapView extends View {
   }
 
   _generateMapLayers() {
+
+    this._parentElement.querySelector('.fullscreen-btn').addEventListener('click', () => {
+      this._map.invalidateSize();
+    })
+
     const selectedCountryGeoJSON = this._countriesCoordinates.find(
       (el) => el.id === this._selectCountry
     );
