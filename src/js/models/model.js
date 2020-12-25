@@ -35,7 +35,7 @@ export const loadAll = async function () {
       recovered: data.recovered,
     };
 
-    
+
 
     state.todayData = {
       cases: data.todayCases,
@@ -116,14 +116,7 @@ export const loadCountryAll = async function () {
           recovered: Math.round(el.todayRecovered * 100000 / countPeople),
         }
       });
-
-
     });
-
-    console.log(state);
-
-
-
   } catch (err) {
     console.error(err);
   }
@@ -171,24 +164,21 @@ export const loadCountry = async function () {
 
 export const addCovidDataToCoordinates = async function () {
   try {
- state.allCountry.forEach((ind) => {
-  state.countriesCoordinates.forEach((el) => {
-  if (ind.countryInfo.iso3 === el.id) {
-    el.todayData = ind.todayData;
-    el.todayOneHundredThousandData = ind.todayOneHundredThousandData;
-    el.oneHundredThousandData = ind.oneHundredThousandData;
-    el.allData = ind.allData;
-  }
-  })
- })   
- state.countriesCoordinates = state.countriesCoordinates.filter(el => el.allData);
+    state.allCountry.forEach((ind) => {
+      state.countriesCoordinates.forEach((el) => {
+        if (ind.countryInfo.iso3 === el.id) {
+          el.todayData = ind.todayData;
+          el.todayOneHundredThousandData = ind.todayOneHundredThousandData;
+          el.oneHundredThousandData = ind.oneHundredThousandData;
+          el.allData = ind.allData;
+        }
+      })
+    })
+    state.countriesCoordinates = state.countriesCoordinates.filter(el => el.allData);
   } catch (err) {
     console.log(err);
   }
 }
-
-
-
 
 export const searchCountry = async function (searchCountry = '') {
   try {

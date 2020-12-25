@@ -36,6 +36,7 @@ module.exports = {
   },
   resolve: {
     extensions: ['.js'],
+    modules: ['node_modules'],
     alias: {
       '@': path.resolve(__dirname, 'src'),
       '@core': path.resolve(__dirname, 'src/core'),
@@ -83,6 +84,14 @@ module.exports = {
           },
           'css-loader',
           'sass-loader',
+        ],
+      },
+      {
+        test: /\.css$/i,
+        use: [
+          'handlebars-loader', // handlebars loader expects raw resource string
+          'extract-loader',
+          'css-loader'
         ],
       },
       {
